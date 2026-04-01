@@ -1,4 +1,4 @@
-{{
+{
   "name": "openai-cli",
   "version": "1.0.0",
   "description": "A practical OpenAI CLI for daily use",
