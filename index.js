@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * index.js
  * Bruno Suric
@@ -6,11 +8,12 @@
  * Supports prompt input, modes (short/medium/long), file input,
  * clipboard copy, saving output, raw JSON output, and model override.
  */
-#!/usr/bin/env node
+
 import OpenAI from "openai";
 import clipboard from "clipboardy";
 import fs from "fs";
 import path from "path";
+import readline from "readline";
 
 if (!process.env.OPENAI_API_KEY) {
   console.error("Error: OPENAI_API_KEY is not set.");
@@ -32,11 +35,17 @@ let fileInput = null;
 let rawFlag = false;
 let noPrintFlag = false;
 let helpFlag = false;
+let chatFlag = false;
 
 const cleanedArgs = [];
 
 for (let i = 0; i < rawArgs.length; i++) {
   const arg = rawArgs[i];
+  
+  if (arg === "--chat") {
+	  chatFlag = true;
+	  continue;
+  }
 
   if (arg === "--help" || arg === "-h") {
     helpFlag = true;
@@ -133,6 +142,7 @@ Usage:
   node index.js "your prompt here" --system "Answer like a lecturer"
   node index.js "your prompt here" --raw
   node index.js "your prompt here" --no-print
+  node index.js --chat
 
 Modes:
   short     One short sentence
@@ -149,6 +159,7 @@ Flags:
   --file <file>     Read prompt from a text file
   --raw             Print raw JSON response and save it
   --no-print        Do not print normal output to terminal
+  --chat            Start interactive chat mode
 
 Examples:
   node index.js "What is DNS tunneling?"
@@ -158,6 +169,7 @@ Examples:
   node index.js --file prompt.txt --copy
   node index.js "Explain DHCP starvation" --model gpt-4.1
   node index.js "Explain DNS tunneling" --system "Answer like an NFQ Level 8 lecturer"
+  node index.js --chat
 `);
   process.exit(0);
 }
@@ -258,6 +270,81 @@ function resolveSavePath(filename) {
   }
 
   return path.join(outputsDir, filename);
+}
+
+async function startChatMode() {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      prompt: "You> "
+    });
+
+    console.log(`Using model: ${model}\n`);
+    console.log('Chat mode started. Type "exit" to quit.');
+
+    rl.prompt();
+
+    rl.on("line", async (line) => {
+      const input = line.trim();
+
+      if (!input) {
+        rl.prompt();
+        return;
+      }
+
+      if (input.toLowerCase() === "exit") {
+        rl.close();
+        return;
+      }
+
+      try {
+        const response = await client.responses.create({
+          model,
+          instructions: getInstruction(mode, systemInstruction),
+          input,
+          max_output_tokens: getMaxTokens(mode)
+        });
+
+        const output = extractOutput(response);
+
+        if (rawFlag) {
+          console.log(JSON.stringify(response, null, 2));
+
+          const rawPath = resolveSavePath(`raw-${timestampForFilename()}.json`);
+          fs.writeFileSync(rawPath, JSON.stringify(response, null, 2), "utf8");
+          console.log(`Raw response saved to ${rawPath}`);
+        } else if (!noPrintFlag) {
+          console.log(`AI> ${output}\n`);
+        }
+
+        if (copyFlag) {
+          clipboard.writeSync(output);
+          console.log("Copied to clipboard\n");
+        }
+
+        if (saveFlag) {
+          const finalPath = resolveSavePath(saveFile);
+          fs.writeFileSync(finalPath, output, "utf8");
+          console.log(`Saved to ${finalPath}\n`);
+        }
+      } catch (err) {
+        console.error("Error:", err.message);
+      }
+
+      rl.prompt();
+    });
+
+    rl.on("close", () => {
+      console.log("Chat ended.");
+      resolve();
+    });
+  });
+}
+
+if (chatFlag) {
+  await startChatMode();
+  process.exit(0);
 }
 
 const question = getQuestion();
