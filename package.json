@@ -1,4 +1,4 @@
-{
+{{
   "name": "openai-cli",
   "version": "1.0.0",
   "description": "A practical OpenAI CLI for daily use",
@@ -11,8 +11,19 @@
     "start": "node index.js",
     "help": "node index.js --help"
   },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "cli",
+    "openai",
+    "nodejs",
+    "developer-tools",
+    "automation",
+    "ai"
+  ],
   "dependencies": {
-    "clipboardy": "^4.0.0",
-    "openai": "^6.0.0"
+    "clipboardy": "^5.3.1",
+    "openai": "^6.33.0"
   }
 }
