@@ -1,204 +1,310 @@
 # OpenAI CLI Assistant
 
-A fast, developer-focused CLI tool for interacting with OpenAI directly from your terminal.
+A developer-focused CLI tool for interacting with OpenAI directly from the terminal.
 
-Designed for real-world workflows: quick queries, file-based prompts, code explanation, and developer-level analysis — all without leaving the command line.
-
----
-
-## Demo
-
-Run directly from terminal:
-
-```
-ai "Explain DNS tunneling" short
-```
-
-Output:
-
-```
-DNS tunneling is a technique that encodes data inside DNS queries to bypass network restrictions.
-```
-
-No UI, no browser — everything runs directly in your terminal.
+Built for real workflows: quick queries, file-based prompts, code explanation, and project analysis without leaving the command line.
 
 ---
 
-## Features
+## Quick Preview
 
-* Prompt-based interaction from terminal
-* Response modes: `short`, `medium`, `long`
-* Interactive chat mode (`--chat`)
-* File input support (`--file`)
-* Code explanation mode (`--explain`)
-* Code analysis mode (`--analyze`)
-* Clipboard integration (`--copy`)
-* Save output to file (`--save`)
-* Raw API response output (`--raw`)
-* Model override (`--model`)
-* Custom system instructions (`--system`)
+```bash
+ai --analyze .
+```
+
+### Project Analysis
+
+![Project Analysis](./assets/analyze_project_01.png)
+
+### Debug Mode
+
+![Debug](./assets/analyze_debug_01.png)
+
+### Optimize Mode
+
+![Optimize](./assets/analyze_project_optimize_01.png)
+
+### Save Output
+
+![Save](./assets/analyze_project_save_01.png)
 
 ---
 
-## Explain Code Files
+## What This Is
 
-Explain any code or text file instantly:
+This started as a simple CLI wrapper and grew into something more useful.
 
-```
-ai --explain index.js
-```
+It is now a project-aware AI assistant for developers working in the terminal.
 
-The CLI generates structured explanations including:
+It helps you:
 
-* Overall purpose
-* Code structure
-* Logic flow
-* Key functions
-* Learning insights for developers
+* understand code quickly
+* debug issues
+* improve structure and readability
+* run prompts without context switching to a browser
 
-Examples:
+---
 
-```
-ai --explain index.js --copy
-ai --explain index.js --save explanation.txt
-ai --explain index.js long
+## Core Features
+
+### Prompt Execution
+
+```bash
+ai "Explain DNS tunneling"
+ai "Explain subnetting" short
 ```
 
 ---
 
-## Analyze Code (Developer Mode)
+### Response Length
 
-Analyze code for deeper understanding, debugging, and optimization:
-
+```text
+short     → one short sentence
+medium    → 2–3 clear sentences (default)
+long      → structured explanation
 ```
-ai --analyze index.js
-ai --analyze index.js debug
-ai --analyze index.js optimize
-```
-
-Modes:
-
-* `explain` → structure and design understanding
-* `debug` → bugs, edge cases, risky logic
-* `optimize` → performance and readability improvements
 
 ---
 
-## Example Output
+### Task Modes
 
-### Basic Prompt
+```bash
+--mode solve
+--mode review
+--mode explain
+```
 
-![CLI Demo](./assets/demo.png)
+| Mode    | Purpose                        |
+| ------- | ------------------------------ |
+| solve   | direct, practical answers      |
+| review  | critical analysis and feedback |
+| explain | structured learning output     |
 
-### Chat Mode
+---
 
-![Chat Demo](./assets/chat-demo.png)
+### File Input
+
+```bash
+ai --file prompt.txt
+```
+
+---
 
 ### Code Explanation
 
-#### Part 1
+```bash
+ai --explain index.js
+```
 
-![Explain Demo 1](./assets/explain-demo1.png)
+Provides a structured breakdown of what the file does and how it works.
 
-#### Part 2
-
-![Explain Demo 2](./assets/explain-demo2.png)
+---
 
 ### Code Analysis
 
-#### Debug Analysis
+```bash
+ai --analyze index.js
+ai --analyze index.js debug
+ai --analyze index.js optimize
+ai --analyze .
+```
 
-![Analyze Demo 1](./assets/analyze-demo1.png)
+Supports both single-file and project-level analysis.
 
-#### Optimization Suggestions
+---
 
-![Analyze Demo 2](./assets/analyze-demo2.png)
+### Chat Mode
+
+```bash
+ai --chat
+```
+
+Interactive terminal session.
+
+---
+
+### Output Handling
+
+```bash
+--copy        copy to clipboard
+--save        save to file (auto name)
+--save file   save to named file
+--raw         print raw JSON
+--no-print    silent mode
+```
+
+Saved outputs go to:
+
+```
+/outputs
+```
+
+---
+
+### Model Control
+
+```bash
+--model gpt-4.1
+```
+
+Default:
+
+```
+.env → OPENAI_MODEL
+fallback → gpt-4.1-mini
+```
 
 ---
 
 ## Installation
 
-Clone the repository:
-
-```
+```bash
 git clone https://github.com/brunkonjaa/openai-cli.git
 cd openai-cli
 npm install
-```
-
-Create a `.env` file:
-
-```
-OPENAI_API_KEY=your_api_key_here
-OPENAI_MODEL=gpt-4.1
-```
-
-Or copy example:
-
-```
-cp .env.example .env
-```
-
-Link the CLI globally:
-
-```
 npm link
 ```
 
-Now you can use:
+---
 
+## Platform Notes
+
+### Windows (PowerShell)
+
+```powershell
+git clone https://github.com/brunkonjaa/openai-cli.git
+cd openai-cli
+npm install
+npm link
 ```
-ai "your prompt here"
+
+If `ai` is not recognized:
+
+* restart terminal
+* ensure npm global path is in PATH
+
+---
+
+### Linux
+
+```bash
+git clone https://github.com/brunkonjaa/openai-cli.git
+cd openai-cli
+npm install
+npm link
+```
+
+If permission issues occur:
+
+```bash
+sudo npm link
 ```
 
 ---
 
-## Usage
+### macOS
 
-### Basic
-
-```
-ai "What is DNS tunneling?"
-```
-
-### Modes
-
-```
-ai "Explain subnetting" short
-ai "Explain subnetting" long
+```bash
+git clone https://github.com/brunkonjaa/openai-cli.git
+cd openai-cli
+npm install
+npm link
 ```
 
-### File Input
+If needed:
 
-```
-ai --file prompt.txt
-```
-
-### Explain Code
-
-```
-ai --explain index.js
-```
-
-### Analyze Code
-
-```
-ai --analyze index.js debug
-```
-
-### Chat Mode
-
-```
-ai --chat
+```bash
+sudo npm link
 ```
 
 ---
 
-## Output Handling
+## Requirements
 
-* `--copy` → copies result to clipboard
-* `--save` → saves output to file
-* Outputs are stored in the `outputs/` directory by default
+* Node.js 20 or newer
+* npm
+* OpenAI API key
+
+Check your version:
+
+```bash
+node -v
+```
+
+---
+
+## Setup
+
+Create a `.env` file in the root:
+
+```bash
+OPENAI_API_KEY=your_api_key_here
+OPENAI_MODEL=gpt-4.1-mini
+```
+
+Or copy the example:
+
+```bash
+cp .env.example .env
+```
+
+Then replace the placeholder with your real API key.
+
+---
+
+## Security Warning
+
+Do not commit your `.env` file.
+
+Your API key provides access to your account and usage.
+
+Make sure:
+
+* `.env` is in `.gitignore`
+* you do not paste keys into code
+* you do not include keys in screenshots or commits
+
+If exposed, revoke the key immediately.
+
+---
+
+## Global Usage
+
+After linking:
+
+```bash
+npm link
+```
+
+Run from anywhere:
+
+```bash
+ai "your prompt"
+```
+
+---
+
+## Architecture
+
+Core logic lives in a single file:
+
+```
+index.js
+```
+
+Supporting folders handle assets and outputs.
+
+Handles:
+
+* argument parsing
+* prompt building
+* file and directory analysis
+* API communication
+* output handling
+
+No external CLI frameworks are used.
+
+Argument parsing is implemented manually to keep full control over behavior and reduce abstraction.
 
 ---
 
@@ -206,40 +312,68 @@ ai --chat
 
 This project demonstrates:
 
-* Building a real CLI tool using Node.js
-* Integration with OpenAI API
-* Secure environment-based configuration
-* Manual argument parsing (no heavy frameworks)
-* Feature design for real developer workflows
-* Code explanation and analysis tooling
-* Clean Git workflow and version control
+* building a practical CLI tool in Node.js
+* manual argument parsing without helper libraries
+* structured AI usage (task modes and response control)
+* code understanding and analysis workflows
+* real developer tooling patterns
 
-This reflects modern developer workflows:
+It reflects how developers actually work:
 
-* Fast iteration
-* Terminal-based automation
-* Understanding unfamiliar code quickly
+* from the terminal
+* with real code
+* focusing on speed and clarity
 
 ---
 
-## Future Improvements
+## Current State
 
-* Multi-file analysis support
-* Diff-based analysis
-* Streaming responses
-* Colored CLI output
-* Plugin-style extensions
+Version:
+
+v1.2 — Project-aware CLI
+
+Completed:
+
+* directory analysis
+* recursive file discovery
+* multi-file parsing
+* structured analysis modes
 
 ---
 
-## GitHub Topics
+## Roadmap
 
-* cli
-* nodejs
-* openai
-* productivity
-* developer-tools
-* automation
+Next:
+
+* improve technical depth of analysis output
+* prioritise relevant files during project scans
+* refine prompt structure for more consistent results
+
+Later:
+
+* streaming responses
+* colored CLI output
+* modular structure (if needed)
+
+---
+
+## Design Philosophy
+
+* minimal structure
+* full control over behavior
+* features must solve real problems
+* clarity over complexity
+
+---
+
+## Topics
+
+cli
+nodejs
+openai
+developer-tools
+automation
+ai
 
 ---
 
